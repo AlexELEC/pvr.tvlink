@@ -1557,9 +1557,14 @@ void PVRIptvData::CloseLiveStream(void)
 int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
   unsigned int bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
-  // restart current channel
-  if (bytesRead != iBufferSize)
+  if (bytesRead < iBufferSize)
   {
+    if (bytesRead > 0)
+    {
+      XBMC->Log(LOG_NOTICE, "%s - requested %d but only read %d bytes.", __FUNCTION__, iBufferSize, bytesRead);
+      return bytesRead;
+    }
+    // restart current channel
     std::string url = m_currentChannel.strStreamURL;
     std::string name = m_currentChannel.strChannelName;
     XBMC->Log(LOG_NOTICE, "%s - restart [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
@@ -1575,6 +1580,7 @@ int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize
     if (url.empty())
       return -1;
 
+    usleep(1000000);
     m_streamHandle = XBMC->OpenFile(url.c_str(), 0x08/*READ_NO_CACHE*/);
     XBMC->Log(LOG_NOTICE, "%s - play [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);

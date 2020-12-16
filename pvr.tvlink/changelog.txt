@@ -1,3 +1,6 @@
+v1.0.2
+- Fix ReadLiveStream
+
 v1.0.1
 - Add TVLINK EPG
 
