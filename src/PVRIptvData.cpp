@@ -1557,30 +1557,58 @@ void PVRIptvData::CloseLiveStream(void)
 int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
   unsigned int bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
-  if (bytesRead < iBufferSize)
+
+  if (XBMC->FileExists("/tmp/stalled.stream", false))
   {
-    if (bytesRead > 0)
-    {
-      XBMC->Log(LOG_NOTICE, "%s - requested %d but only read %d bytes.", __FUNCTION__, iBufferSize, bytesRead);
-      return bytesRead;
-    }
-    // restart current channel
+    XBMC->Log(LOG_NOTICE, "%s - many times stream stalled", __FUNCTION__);
+    XBMC->DeleteFile("/tmp/stalled.stream");
+    // reopen current stream
     std::string url = m_currentChannel.strStreamURL;
     std::string name = m_currentChannel.strChannelName;
-    XBMC->Log(LOG_NOTICE, "%s - restart [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
+    XBMC->Log(LOG_NOTICE, "%s - reopen current stream [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     // close stream
     P8PLATFORM::CLockObject lock(m_mutex);
     if (m_streamHandle != NULL)
     {
       XBMC->CloseFile(m_streamHandle);
       m_streamHandle = NULL;
-      XBMC->Log(LOG_NOTICE, "%s - close [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
+      //XBMC->Log(LOG_NOTICE, "%s - close [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     }
 
     if (url.empty())
       return -1;
 
-    usleep(1000000);
+    //usleep(500000);
+    m_streamHandle = XBMC->OpenFile(url.c_str(), 0x08/*READ_NO_CACHE*/);
+    XBMC->Log(LOG_NOTICE, "%s - play [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
+    bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
+    return bytesRead;
+  }
+
+  if (bytesRead < iBufferSize)
+  {
+    if (bytesRead > 0)
+    {
+      XBMC->Log(LOG_NOTICE, "%s - requested [%d] but only read [%d] bytes.", __FUNCTION__, iBufferSize, bytesRead);
+      return bytesRead;
+    }
+    // restart current channel
+    std::string url = m_currentChannel.strStreamURL;
+    std::string name = m_currentChannel.strChannelName;
+    XBMC->Log(LOG_NOTICE, "%s - restart current channel [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
+    // close stream
+    P8PLATFORM::CLockObject lock(m_mutex);
+    if (m_streamHandle != NULL)
+    {
+      XBMC->CloseFile(m_streamHandle);
+      m_streamHandle = NULL;
+      //XBMC->Log(LOG_NOTICE, "%s - close [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
+    }
+
+    if (url.empty())
+      return -1;
+
+    //usleep(500000);
     m_streamHandle = XBMC->OpenFile(url.c_str(), 0x08/*READ_NO_CACHE*/);
     XBMC->Log(LOG_NOTICE, "%s - play [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
