@@ -6,6 +6,7 @@
     <setting id="tvlServer" type="text" label="30011" default="127.0.0.1"/>
     <setting id="tvlPort" type="number" label="30012" default="2020" />
     <setting id="m3uCache" type="bool" label="30013" default="false"/>
+    <setting id="streamCache" type="bool" label="30014" default="false"/>
   </category>
 
   <!-- EPG -->

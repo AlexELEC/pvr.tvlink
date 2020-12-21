@@ -1522,7 +1522,7 @@ std::string PVRIptvData::AddHeaderToStreamUrl (const std::string& url, const std
 
 // live stream functions
 
-bool PVRIptvData::OpenLiveStream(const PVR_CHANNEL &channel)
+bool PVRIptvData::OpenLiveStream(const PVR_CHANNEL &channel, unsigned int iCacheFlag)
 {
   P8PLATFORM::CLockObject lock(m_mutex);
   m_streamHandle = NULL;
@@ -1532,8 +1532,8 @@ bool PVRIptvData::OpenLiveStream(const PVR_CHANNEL &channel)
     std::string name = m_currentChannel.strChannelName;
     if (!url.empty())
     {
-      XBMC->Log(LOG_NOTICE, "%s - [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
-      m_streamHandle = XBMC->OpenFile(url.c_str(), 0x08/*READ_NO_CACHE*/);
+      XBMC->Log(LOG_NOTICE, "%s - [%s] [ %s ] CacheFlag [%d]", __FUNCTION__, name.c_str(), url.c_str(), iCacheFlag);
+      m_streamHandle = XBMC->OpenFile(url.c_str(), iCacheFlag);
       return m_streamHandle != NULL;
     }
   }
@@ -1554,7 +1554,7 @@ void PVRIptvData::CloseLiveStream(void)
 
 }
 
-int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
+int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize, unsigned int iCacheFlag)
 {
   unsigned int bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
 
@@ -1572,14 +1572,12 @@ int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize
     {
       XBMC->CloseFile(m_streamHandle);
       m_streamHandle = NULL;
-      //XBMC->Log(LOG_NOTICE, "%s - close [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     }
 
     if (url.empty())
       return -1;
 
-    //usleep(500000);
-    m_streamHandle = XBMC->OpenFile(url.c_str(), 0x08/*READ_NO_CACHE*/);
+    m_streamHandle = XBMC->OpenFile(url.c_str(), iCacheFlag);
     XBMC->Log(LOG_NOTICE, "%s - play [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
     return bytesRead;
@@ -1587,11 +1585,6 @@ int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize
 
   if (bytesRead < iBufferSize)
   {
-    if (bytesRead > 0)
-    {
-      XBMC->Log(LOG_NOTICE, "%s - requested [%d] but only read [%d] bytes.", __FUNCTION__, iBufferSize, bytesRead);
-      return bytesRead;
-    }
     // restart current channel
     std::string url = m_currentChannel.strStreamURL;
     std::string name = m_currentChannel.strChannelName;
@@ -1602,14 +1595,12 @@ int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize
     {
       XBMC->CloseFile(m_streamHandle);
       m_streamHandle = NULL;
-      //XBMC->Log(LOG_NOTICE, "%s - close [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     }
 
     if (url.empty())
       return -1;
 
-    //usleep(500000);
-    m_streamHandle = XBMC->OpenFile(url.c_str(), 0x08/*READ_NO_CACHE*/);
+    m_streamHandle = XBMC->OpenFile(url.c_str(), iCacheFlag);
     XBMC->Log(LOG_NOTICE, "%s - play [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
     bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
   }

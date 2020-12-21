@@ -1,3 +1,6 @@
+v1.0.3
+- Add option Cache streams
+
 v1.0.2
 - Fix ReadLiveStream
 - Reopen current stream for many stalled

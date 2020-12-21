@@ -110,9 +110,9 @@ public:
   virtual void      ReloadPlayList(const char * strNewPath);
   virtual void      ReloadEPG(const char * strNewPath);
 
-  virtual bool      OpenLiveStream(const PVR_CHANNEL &channel);
+  virtual bool      OpenLiveStream(const PVR_CHANNEL &channel, unsigned int iCacheFlag);
   virtual void      CloseLiveStream(void);
-  virtual int       ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize);
+  virtual int       ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize, unsigned int iCacheFlag);
 
 protected:
   virtual bool                 LoadPlayList(void);

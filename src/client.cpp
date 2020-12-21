@@ -63,9 +63,12 @@ int         g_iEPGTimeShift = 0;
 int         g_iStartNumber  = 1;
 bool        g_bTSOverride   = true;
 bool        g_bCacheM3U     = false;
+bool        g_bCacheSTRM    = false;
 bool        g_bCacheEPG     = false;
 int         g_iEPGLogos     = 1;
 int         g_iPathType     = 0;
+
+unsigned int g_iCacheFlag   = 0x08; /*READ_NO_CACHE*/
 
 extern std::string PathCombine(const std::string &strPath, const std::string &strFileName)
 {
@@ -110,6 +113,18 @@ void ADDON_ReadSettings(void)
   if (!XBMC->GetSetting("m3uCache", &g_bCacheM3U))
   {
     g_bCacheM3U = false;
+  }
+  if (!XBMC->GetSetting("streamCache", &g_bCacheSTRM))
+  {
+    g_bCacheSTRM = false;
+  }
+  if (g_bCacheSTRM)
+  {
+    g_iCacheFlag = 0x04; /*READ_CACHED*/
+  }
+  else
+  {
+    g_iCacheFlag = 0x08; /*READ_NO_CACHE*/
   }
 
   if (!XBMC->GetSetting("epgPathType", &g_iPathType))
@@ -347,7 +362,7 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 bool OpenLiveStream(const PVR_CHANNEL &channel)
 {
   if (m_data)
-    return m_data->OpenLiveStream(channel);
+    return m_data->OpenLiveStream(channel, g_iCacheFlag);
 
   return false;
 }
@@ -359,7 +374,7 @@ void CloseLiveStream(void)
 
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
-  return m_data->ReadLiveStream(pBuffer, iBufferSize);
+  return m_data->ReadLiveStream(pBuffer, iBufferSize, g_iCacheFlag);
 }
 
 /** UNUSED API FUNCTIONS */
