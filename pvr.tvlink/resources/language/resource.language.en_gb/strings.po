@@ -62,9 +62,9 @@ msgid "Cache EPG at local storage"
 msgstr ""
 
 msgctxt "#30023"
-msgid "Apply Time Shift To All Channels"
+msgid "EPG Time Shift (hours)"
 msgstr ""
 
 msgctxt "#30024"
-msgid "EPG Time Shift (hours)"
+msgid "Apply Time Shift To All Channels"
 msgstr ""
