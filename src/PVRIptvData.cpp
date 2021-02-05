@@ -1532,7 +1532,7 @@ bool PVRIptvData::OpenLiveStream(const PVR_CHANNEL &channel, unsigned int iCache
     std::string name = m_currentChannel.strChannelName;
     if (!url.empty())
     {
-      XBMC->Log(LOG_NOTICE, "%s - [%s] [ %s ] CacheFlag [%d]", __FUNCTION__, name.c_str(), url.c_str(), iCacheFlag);
+      XBMC->Log(LOG_NOTICE, "%s - [%s] Live URL: %s - CacheFlag [%d]", __FUNCTION__, name.c_str(), url.c_str(), iCacheFlag);
       m_streamHandle = XBMC->OpenFile(url.c_str(), iCacheFlag);
       return m_streamHandle != NULL;
     }
@@ -1549,7 +1549,7 @@ void PVRIptvData::CloseLiveStream(void)
     std::string name = m_currentChannel.strChannelName;
     XBMC->CloseFile(m_streamHandle);
     m_streamHandle = NULL;
-    XBMC->Log(LOG_NOTICE, "%s - [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
+    XBMC->Log(LOG_NOTICE, "%s - [%s] Live URL: %s", __FUNCTION__, name.c_str(), url.c_str());
   }
 
 }
@@ -1558,51 +1558,45 @@ int PVRIptvData::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize
 {
   unsigned int bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
 
-  if (XBMC->FileExists("/tmp/stalled.stream", false))
-  {
-    XBMC->Log(LOG_NOTICE, "%s - many times stream stalled", __FUNCTION__);
-    XBMC->DeleteFile("/tmp/stalled.stream");
-    // reopen current stream
-    std::string url = m_currentChannel.strStreamURL;
-    std::string name = m_currentChannel.strChannelName;
-    XBMC->Log(LOG_NOTICE, "%s - reopen current stream [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
-    // close stream
-    P8PLATFORM::CLockObject lock(m_mutex);
-    if (m_streamHandle != NULL)
-    {
-      XBMC->CloseFile(m_streamHandle);
-      m_streamHandle = NULL;
-    }
-
-    if (url.empty())
-      return -1;
-
-    m_streamHandle = XBMC->OpenFile(url.c_str(), iCacheFlag);
-    XBMC->Log(LOG_NOTICE, "%s - play [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
-    bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
-    return bytesRead;
-  }
-
   if (bytesRead < iBufferSize)
   {
     // restart current channel
     std::string url = m_currentChannel.strStreamURL;
     std::string name = m_currentChannel.strChannelName;
-    XBMC->Log(LOG_NOTICE, "%s - restart current channel [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
-    // close stream
-    P8PLATFORM::CLockObject lock(m_mutex);
-    if (m_streamHandle != NULL)
+    XBMC->Log(LOG_NOTICE, "%s - [%s] requested bytes [%d] received bytes [%d]", __FUNCTION__, name.c_str(), iBufferSize, bytesRead);
+    if (strLastURL == url)
     {
-      XBMC->CloseFile(m_streamHandle);
-      m_streamHandle = NULL;
+      iRestart_cnt++;
+    }
+    else
+    {
+      strLastURL = url;
+      iRestart_cnt = 1;
     }
 
-    if (url.empty())
-      return -1;
+    if (iRestart_cnt > MAX_COUNT_RESTART || bytesRead < 1 )
+    {
+      XBMC->Log(LOG_NOTICE, "%s - [%s] stream stalled count: %d", __FUNCTION__, name.c_str(), iRestart_cnt);
+      iRestart_cnt = 0;
 
-    m_streamHandle = XBMC->OpenFile(url.c_str(), iCacheFlag);
-    XBMC->Log(LOG_NOTICE, "%s - play [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
-    bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
+      // send restart stream
+      std::string restart_url = url + "?restart=kodi";
+      XBMC->OpenFile(restart_url.c_str(), 0x08);
+
+      // restart stream
+      CloseLiveStream();
+      P8PLATFORM::CLockObject lock(m_mutex);
+      m_streamHandle = XBMC->OpenFile(url.c_str(), iCacheFlag);
+
+      if (m_streamHandle == NULL)
+      {
+        XBMC->Log(LOG_NOTICE, "%s - Could not open streaming for channel [%s]", __FUNCTION__, name.c_str());
+        return -1;
+      }
+         
+      XBMC->Log(LOG_NOTICE, "%s - restart current channel [%s] [ %s ]", __FUNCTION__, name.c_str(), url.c_str());
+      bytesRead = XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
+    }
   }
   return bytesRead;
 }

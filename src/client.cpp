@@ -377,9 +377,12 @@ int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
   return m_data->ReadLiveStream(pBuffer, iBufferSize, g_iCacheFlag);
 }
 
+bool CanPauseStream(void){
+  return true;
+}
+
 /** UNUSED API FUNCTIONS */
 PVR_ERROR GetChannelStreamProperties(const PVR_CHANNEL*, PVR_NAMED_VALUE*, unsigned int*) { return PVR_ERROR_NOT_IMPLEMENTED; }
-bool CanPauseStream(void) { return false; }
 int GetRecordingsAmount(bool deleted) { return -1; }
 PVR_ERROR GetRecordings(ADDON_HANDLE handle, bool deleted) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR GetRecordingStreamProperties(const PVR_RECORDING*, PVR_NAMED_VALUE*, unsigned int*) { return PVR_ERROR_NOT_IMPLEMENTED; }

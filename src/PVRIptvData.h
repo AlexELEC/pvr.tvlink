@@ -159,4 +159,7 @@ private:
   P8PLATFORM::CMutex                m_mutex;
   void *                            m_streamHandle;
   PVRIptvChannel                    m_currentChannel;
+  static const int                  MAX_COUNT_RESTART = 4;
+  unsigned int                      iRestart_cnt = 0;
+  std::string                       strLastURL;
 };
