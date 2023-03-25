@@ -16,55 +16,226 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#30000"
-msgid "Location"
+#. label-option: General - m3uRefreshMode
+msgctxt "#30003"
+msgid "Disabled"
 msgstr ""
 
-msgctxt "#30001"
-msgid "TVLINK"
+msgctxt "#30004"
+msgid "Repeated refresh"
 msgstr ""
 
-msgctxt "#30002"
-msgid "Remote Path (Internet address)"
+msgctxt "#30005"
+msgid "Once per day"
 msgstr ""
 
+#empty strings from id 30006 to 30009
 
+#. label-category: general
+#. label-group: General - General
 msgctxt "#30010"
 msgid "General"
 msgstr ""
 
+#. label: General - tvlinkIP
 msgctxt "#30011"
-msgid "Server address"
+msgid "TVLINK IP-address"
 msgstr ""
 
+#. label: General - tvlinkPort
 msgctxt "#30012"
-msgid "Server port"
+msgid "TVLINK port"
 msgstr ""
 
+#. label: General - tvlinkUser
+msgctxt "#30709"
+msgid "TVLINK profile"
+msgstr ""
+
+#. label: General - tvlinkToken
+msgctxt "#30714"
+msgid "Auth. Token"
+msgstr ""
+
+#. label: General - useFFmpeg
+msgctxt "#30716"
+msgid "FFmpeg playlist"
+msgstr ""
+
+#. label: General - tvlinkTimeout (CURL connection-timeout)
+msgctxt "#30711"
+msgid "TVLINK connection timeout"
+msgstr ""
+
+#. label: General - startNum
 msgctxt "#30013"
-msgid "Cache channels at local storage"
+msgid "Start channel number"
 msgstr ""
 
+#. label: General - numberByOrder
 msgctxt "#30014"
-msgid "Cache streams"
+msgid "Only number by channel order in list"
 msgstr ""
 
-msgctxt "#30020"
+#. label: General - m3uRefreshMode
+msgctxt "#30015"
+msgid "Auto refresh mode"
+msgstr ""
+
+#. label: General - m3uRefreshIntervalMins
+msgctxt "#30016"
+msgid "Refresh interval"
+msgstr ""
+
+#. label: General - m3uRefreshHour
+msgctxt "#30017"
+msgid "Refresh hour (24h)"
+msgstr ""
+
+#. label-group: General - Refresh
+msgctxt "#30018"
+msgid "Refresh"
+msgstr ""
+
+msgctxt "#30019"
 msgid "EPG Settings"
 msgstr ""
 
-msgctxt "#30021"
-msgid "XMLTV URL"
+msgctxt "#30020"
+msgid "EPG"
 msgstr ""
 
-msgctxt "#30022"
-msgid "Cache EPG at local storage"
-msgstr ""
-
+#. label: EPG Settings - epgTSOverride
 msgctxt "#30023"
-msgid "EPG Time Shift (hours)"
+msgid "Apply time shift to all channels"
 msgstr ""
 
+#. label: EPG Settings - epgTimeShift
 msgctxt "#30024"
-msgid "Apply Time Shift To All Channels"
+msgid "EPG time shift"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Cache channel list at local storage"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Cache XMLTV EPG at local storage"
+msgstr ""
+
+#. label-group: Stream control
+
+msgctxt "#30030"
+msgid "Streams"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Stream control"
+msgstr ""
+
+msgctxt "#30630"
+msgid "Stream settings required for the addon to function."
+msgstr ""
+
+msgctxt "#30045"
+msgid "Buffering streams"
+msgstr ""
+
+msgctxt "#30046"
+msgid "Enable stream buffering."
+msgstr ""
+
+#. ############
+#. help info #
+#. ############
+
+#. help info - General
+
+#. help-category: General
+msgctxt "#30600"
+msgid "General settings required for the addon to function."
+msgstr ""
+
+#. help: General - tvlinkIP
+msgctxt "#30601"
+msgid "This setting must contain a valid [B]TVLINK IP-address[/B] for the addon to function."
+msgstr ""
+
+#. help: General - tvlinkPort
+msgctxt "#30602"
+msgid "This setting must contain a valid [B]TVLINK port[/B] for the addon to function."
+msgstr ""
+
+#. help: General - tvlinkUser
+msgctxt "#30710"
+msgid "This setting must contain a valid [B]TVLINK user profile name[/B] for the addon to function."
+msgstr ""
+
+#. help: General - tvlinkToken
+msgctxt "#30715"
+msgid "This setting must contain a valid [B]TVLINK Authorization Token[/B] for the addon to function."
+msgstr ""
+
+#. help: General - useFFmpeg
+msgctxt "#30717"
+msgid "Select if you want to use the transcoding FFmpeg playlist."
+msgstr ""
+
+#. help: General - tvlinkTimeout (CURL connection-timeout)
+msgctxt "#30712"
+msgid "This setting must contain a valid [B]TVLINK connection timeout[/B] for the addon to function."
+msgstr ""
+
+#. help: General - m3uCache
+msgctxt "#30604"
+msgid "Select whether or not the the channel list should be cached locally."
+msgstr ""
+
+#. help: General - startNum
+msgctxt "#30605"
+msgid "The number to start numbering channels from. Only used when [B]Use backend channel numbers[/B] from PVR settings is enabled and a channel number is not supplied in the M3U file."
+msgstr ""
+
+#. help: General - numberByOrder
+msgctxt "#30606"
+msgid "Ignore any 'tvg-chno' tags and only number channels by the order in the M3U starting at 'Start channel number'."
+msgstr ""
+
+#. help: General - m3uRefreshMode
+msgctxt "#30607"
+msgid "Select the auto refresh mode for the channel list and EPG. Note that caching is disabled if auto refresh is used. The options are: [B]Disabled[/B] - Don't auto refresh; [B]Repeated refresh[/B] - Refresh the lists on a minute based interval; [B]Once per day[/B] - Refresh the lists once per day."
+msgstr ""
+
+#. help: General - m3uRefreshIntervalMins
+msgctxt "#30608"
+msgid "If [B]Auto refresh mode[/B] is [B]Repeated refresh[/B] refresh the lists every time this number of minutes passes. Max 180 minutes."
+msgstr ""
+
+#. help: General - m3uRefreshHour
+msgctxt "#30609"
+msgid "If auto refresh mode is [B]Once per day[/B] refresh the lists every time this hour of the day is reached"
+msgstr ""
+
+#empty strings from id 30610 to 30619
+
+#. help info - EPG Settings
+
+#. help-category: EPG Settings
+msgctxt "#30620"
+msgid "Settings related to the EPG."
+msgstr ""
+
+#. help: EPG Settings - epgCache
+msgctxt "#30624"
+msgid "Select whether or not the the XMLTV file should be cached locally."
+msgstr ""
+
+#. help: EPG Settings - epgTimeShift
+msgctxt "#30625"
+msgid "Adjust the EPG times by this value in minutes, range is from -720 mins to +840 mins (- 12 hours to +14 hours)."
+msgstr ""
+
+#. help: EPG Settings - epgTSOverside
+msgctxt "#30626"
+msgid "Whether or not to override the time shift for all channels with `EPG time shift`. If not enabled `EPG time shift` plus the individual time shift per channel (if available) will be used."
 msgstr ""

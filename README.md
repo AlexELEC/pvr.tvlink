@@ -1,3 +1,3 @@
-# TVLINK PVR
+# PVR TVLINK Client
 
-IPTV Live TV PVR client addon for [Kodi](https://kodi.tv)
+TVLINK PVR client addon for [Kodi](https://kodi.tv). Based on [IPTV Simple](https://github.com/kodi-pvr/pvr.iptvsimple) client.
