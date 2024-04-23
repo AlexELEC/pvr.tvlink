@@ -28,9 +28,6 @@ void StreamUtils::SetAllStreamProperties(std::vector<kodi::addon::PVRStreamPrope
     // Channel has an inputstream class set so we only set the stream URL
     properties.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, streamURL);
 
-    if (channel.GetInputStreamName() != PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG)
-      CheckInputstreamInstalledAndEnabled(channel.GetInputStreamName());
-
     if (channel.GetInputStreamName() == INPUTSTREAM_FFMPEGDIRECT)
       InspectAndSetFFmpegDirectStreamProperties(properties, channel, streamURL, isChannelURL);
   }
@@ -51,14 +48,12 @@ void StreamUtils::SetAllStreamProperties(std::vector<kodi::addon::PVRStreamPrope
 
       if (streamType == StreamType::HLS || streamType == StreamType::TS || streamType == StreamType::OTHER_TYPE)
       {
-        if (channel.IsCatchupSupported() && channel.CatchupSupportsTimeshifting() &&
-            CheckInputstreamInstalledAndEnabled(CATCHUP_INPUTSTREAM_NAME))
+        if (channel.IsCatchupSupported() && channel.CatchupSupportsTimeshifting())
         {
           properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, CATCHUP_INPUTSTREAM_NAME);
           SetFFmpegDirectManifestTypeStreamProperty(properties, channel, streamURL, streamType);
         }
-        else if (channel.SupportsLiveStreamTimeshifting() && isChannelURL &&
-                 CheckInputstreamInstalledAndEnabled(INPUTSTREAM_FFMPEGDIRECT))
+        else if (channel.SupportsLiveStreamTimeshifting() && isChannelURL)
         {
           properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, INPUTSTREAM_FFMPEGDIRECT);
           SetFFmpegDirectManifestTypeStreamProperty(properties, channel, streamURL, streamType);
@@ -73,8 +68,6 @@ void StreamUtils::SetAllStreamProperties(std::vector<kodi::addon::PVRStreamPrope
     }
     else // inputstream.adaptive
     {
-      CheckInputstreamInstalledAndEnabled(INPUTSTREAM_ADAPTIVE);
-
       bool streamUrlSet = false;
 
       // If no media headers are explicitly set for inputstream.adaptive,
