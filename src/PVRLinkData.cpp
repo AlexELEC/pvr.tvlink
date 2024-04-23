@@ -258,7 +258,7 @@ PVR_ERROR PVRLinkData::GetEPGTagStreamProperties(const kodi::addon::PVREPGTag& t
     // shift catchup url
     m_currentChannel.GenerateShiftCatchupSource(orgUrl);
     const std::string catchupShiftUrl = m_catchupController.GetCatchupUrl(m_currentChannel);
-      
+
     StreamUtils::SetAllStreamProperties(properties, m_currentChannel, catchupShiftUrl, false, catchupProperties);
 
     Logger::Log(LEVEL_INFO, "%s - EPG Catchup URL: %s", __FUNCTION__, WebUtils::RedactUrl(catchupShiftUrl).c_str());
@@ -353,8 +353,6 @@ bool PVRLinkData::OpenLiveStream(const kodi::addon::PVRChannel& channel)
     const std::string catchupUrl = m_catchupController.GetCatchupUrl(m_currentChannel);
     if (!catchupUrl.empty())
       ch_url = catchupUrl;
-    else
-      ch_url = m_catchupController.ProcessStreamUrl(m_currentChannel);
 
     Logger::Log(LogLevel::LEVEL_INFO, "%s - [%s] %s Live URL: %s", __FUNCTION__, ch_name.c_str(), strCurl_buff.c_str(), WebUtils::RedactUrl(ch_url).c_str());
 
