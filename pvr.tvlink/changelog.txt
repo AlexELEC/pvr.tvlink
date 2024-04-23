@@ -1,3 +1,7 @@
+v2.4.0
+- Fixed: Catchup for Kodi-21 (Omega)
+- Remove: inputstream.ffmpegdirect from depends
+
 v2.3.0
 - Fixed: Rename sourses
 

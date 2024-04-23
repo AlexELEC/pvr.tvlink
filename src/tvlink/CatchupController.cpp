@@ -36,9 +36,11 @@ void CatchupController::ProcessChannelForPlayback(const Channel& channel, std::m
   // Anything from here is live!
   m_playbackIsVideo = false; // TODO: possible time jitter on UI as this will effect get stream times
 
-  if (!m_fromEpgTag || m_controlsLiveStream)
+  //Always get the live EPG entry
+  EpgEntry* liveEpgEntry = GetLiveEPGEntry(channel);
+
+  if (!m_fromTimeshiftedEpgTagCall)
   {
-    EpgEntry* liveEpgEntry = GetLiveEPGEntry(channel);
     if (m_controlsLiveStream && liveEpgEntry && !Settings::GetInstance().CatchupOnlyOnFinishedProgrammes())
     {
       // Live timeshifting support with EPG entry
@@ -53,8 +55,11 @@ void CatchupController::ProcessChannelForPlayback(const Channel& channel, std::m
       m_programmeCatchupId.clear();
       m_catchupStartTime = 0;
       m_catchupEndTime = 0;
+
+      // Not from timeshifted EPG so safe to set the catchup ID here
+      if (!m_controlsLiveStream && liveEpgEntry)
+        m_programmeCatchupId = liveEpgEntry->GetCatchupId();
     }
-    m_fromEpgTag = false;
   }
 
   if (m_controlsLiveStream)
@@ -80,6 +85,9 @@ void CatchupController::ProcessChannelForPlayback(const Channel& channel, std::m
       if (currentEpgEntry)
         UpdateProgrammeFrom(*currentEpgEntry, channel.GetTvgShift());
     }
+
+    //We no longer need to know if this originated from an EPG tag
+    m_fromTimeshiftedEpgTagCall = false;
 
     m_catchupStartTime = m_timeshiftBufferStartTime;
 
@@ -128,9 +136,9 @@ void CatchupController::ProcessEPGTagForTimeshiftedPlayback(const kodi::addon::P
 
     m_timeshiftBufferStartTime = 0;
     m_timeshiftBufferOffset = 0;
-
-    m_fromEpgTag = true;
   }
+
+  m_fromTimeshiftedEpgTagCall = true;
 }
 
 void CatchupController::ProcessEPGTagForVideoPlayback(const kodi::addon::PVREPGTag& epgTag, const Channel& channel, std::map<std::string, std::string>& catchupProperties)
@@ -179,6 +187,16 @@ void CatchupController::ProcessEPGTagForVideoPlayback(const kodi::addon::PVREPGT
 
   if (m_catchupStartTime > 0)
     m_playbackIsVideo = true;
+
+  m_fromTimeshiftedEpgTagCall = false;
+}
+
+void CatchupController::ResetCatchupState()
+{
+  // 'm_fromTimeshiftedEpgTagCall' can only be set if we tried to play an EPG tag as live
+  // This can only happen in ProcessEPGTagForTimeshiftedPlayback() and nowhere else
+  if (!m_fromTimeshiftedEpgTagCall)
+    m_resetCatchupState = true;
 }
 
 void CatchupController::SetCatchupInputStreamProperties(bool playbackAsLive, const Channel& channel, std::map<std::string, std::string>& catchupProperties, const StreamType& streamType)
@@ -380,10 +398,10 @@ std::string FormatDateTime(time_t timeStart, time_t duration, const std::string 
   return formattedUrl;
 }
 
-std::string FormatDateTimeNowOnly(const std::string &urlFormatString)
+std::string FormatDateTimeNowOnly(const std::string &urlFormatString, int timezoneShiftSecs)
 {
   std::string formattedUrl = urlFormatString;
-  const time_t timeNow = std::time(0);
+  const time_t timeNow = std::time(0) - timezoneShiftSecs;
   std::tm dateTimeNow = SafeLocaltime(timeNow);
 
   FormatUtc("{lutc}", timeNow, formattedUrl);
@@ -427,7 +445,7 @@ std::string BuildEpgTagUrl(time_t startTime, time_t duration, const Channel& cha
   if ((startTime > 0 && offset < (timeNow - 5)) || (channel.IgnoreCatchupDays() && !programmeCatchupId.empty()))
     startTimeUrl = FormatDateTime(offset - timezoneShiftSecs, duration, channel.GetCatchupSource());
   else
-    startTimeUrl = FormatDateTimeNowOnly(channel.GetStreamURL());
+    startTimeUrl = FormatDateTimeNowOnly(channel.GetStreamURL(), timezoneShiftSecs);
 
   static const std::regex CATCHUP_ID_REGEX("\\{catchup-id\\}");
   if (!programmeCatchupId.empty())
@@ -474,10 +492,16 @@ std::string CatchupController::GetCatchupUrl(const Channel& channel) const
   return "";
 }
 
-std::string CatchupController::ProcessStreamUrl(const std::string& streamUrl) const
+std::string CatchupController::ProcessStreamUrl(const Channel& channel) const
 {
-  //We only process  current time timestamps specifiers in this case
-  return FormatDateTimeNowOnly(streamUrl);
+  //We only process current time timestamps specifiers in this case
+  std::string processedUrl = FormatDateTimeNowOnly(channel.GetStreamURL(), m_epg.GetEPGTimezoneShiftSecs(channel) + channel.GetCatchupCorrectionSecs());
+
+  static const std::regex CATCHUP_ID_REGEX("\\{catchup-id\\}");
+  if (!m_programmeCatchupId.empty())
+    processedUrl = std::regex_replace(processedUrl, CATCHUP_ID_REGEX, m_programmeCatchupId);
+
+  return processedUrl;
 }
 
 std::string CatchupController::GetStreamTestUrl(const Channel& channel, bool fromEpg) const
@@ -486,7 +510,7 @@ std::string CatchupController::GetStreamTestUrl(const Channel& channel, bool fro
     // Test URL from 2 hours ago for 1 hour duration.
     return BuildEpgTagUrl(std::time(nullptr) - (2 * 60 * 60), 60 * 60, channel, 0, m_programmeCatchupId, m_epg.GetEPGTimezoneShiftSecs(channel) + channel.GetCatchupCorrectionSecs());
   else
-    return ProcessStreamUrl(channel.GetStreamURL());
+    return ProcessStreamUrl(channel);
 }
 
 std::string CatchupController::GetStreamKey(const Channel& channel, bool fromEpg) const

@@ -34,10 +34,10 @@ namespace tvlink
 
     std::string GetCatchupUrlFormatString(const data::Channel& channel) const;
     std::string GetCatchupUrl(const data::Channel& channel) const;
-    std::string ProcessStreamUrl(const std::string& streamUrl) const;
+    std::string ProcessStreamUrl(const data::Channel& channel) const;
 
     bool ControlsLiveStream() const { return m_controlsLiveStream; }
-    void ResetCatchupState() { m_resetCatchupState = true; }
+    void ResetCatchupState();
     data::EpgEntry* GetEPGEntry(const tvlink::data::Channel& myChannel, time_t lookupTime);
 
   private:
@@ -59,7 +59,7 @@ namespace tvlink
     long long m_timeshiftBufferOffset = 0;
     bool m_resetCatchupState = false;
     bool m_playbackIsVideo = false;
-    bool m_fromEpgTag = false;
+    bool m_fromTimeshiftedEpgTagCall = false;
 
     // Current programme details
     time_t m_programmeStartTime = 0;

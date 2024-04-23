@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.tvlink"
-  version="2.3.0"
+  version="2.4.0"
   name="PVR TVLINK Client"
   provider-name="Alex@ELEC">
   <requires>@ADDON_DEPENDS@
-    <import addon="inputstream.ffmpegdirect" minversion="1.19.0"/>
   </requires>
   <extension
     point="kodi.pvrclient"
@@ -24,6 +23,9 @@
       <icon>icon.png</icon>
     </assets>
     <news>
+v2.4.0
+- Fixed: Catchup for Kodi-21 (Omega)
+- Remove: inputstream.ffmpegdirect from depends
 v2.3.0
 - Fixed: Rename sourses
 v2.2.2

@@ -121,7 +121,7 @@ PVR_ERROR PVRLinkData::GetCapabilities(kodi::addon::PVRCapabilities& capabilitie
 
 PVR_ERROR PVRLinkData::GetBackendName(std::string& name)
 {
-  name = "TVLINK Server";
+  name = "TVLINK PVR Add-on";
   return PVR_ERROR_NO_ERROR;
 }
 PVR_ERROR PVRLinkData::GetBackendVersion(std::string& version)
@@ -341,6 +341,21 @@ bool PVRLinkData::OpenLiveStream(const kodi::addon::PVRChannel& channel)
   {
     ch_url = m_currentChannel.GetStreamURL();
     ch_name = m_currentChannel.GetChannelName();
+
+    m_catchupController.ResetCatchupState(); // TODO: we need this currently until we have a way to know the stream stops.
+
+    // We always call the catchup controller regardless so it can cleanup state
+    // whether or not it supports catchup in case there is any houskeeping to do
+    // This also allows us to check if this is a catchup stream or not when we try to get the URL.
+    std::map<std::string, std::string> catchupProperties;
+    m_catchupController.ProcessChannelForPlayback(m_currentChannel, catchupProperties);
+
+    const std::string catchupUrl = m_catchupController.GetCatchupUrl(m_currentChannel);
+    if (!catchupUrl.empty())
+      ch_url = catchupUrl;
+    else
+      ch_url = m_catchupController.ProcessStreamUrl(m_currentChannel);
+
     Logger::Log(LogLevel::LEVEL_INFO, "%s - [%s] %s Live URL: %s", __FUNCTION__, ch_name.c_str(), strCurl_buff.c_str(), WebUtils::RedactUrl(ch_url).c_str());
 
     m_streamHandle.CURLCreate(ch_url.c_str());
