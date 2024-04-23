@@ -121,7 +121,7 @@ PVR_ERROR PVRLinkData::GetCapabilities(kodi::addon::PVRCapabilities& capabilitie
 
 PVR_ERROR PVRLinkData::GetBackendName(std::string& name)
 {
-  name = "TVLINK PVR Add-on";
+  name = "TVLINK Server";
   return PVR_ERROR_NO_ERROR;
 }
 PVR_ERROR PVRLinkData::GetBackendVersion(std::string& version)
