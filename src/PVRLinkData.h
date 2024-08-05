@@ -56,6 +56,7 @@ public:
 
   PVR_ERROR GetChannelsAmount(int& amount) override;
   PVR_ERROR GetChannels(bool radio, kodi::addon::PVRChannelsResultSet& results) override;
+  PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel& channel, std::vector<kodi::addon::PVRStreamProperty>& properties) override;
 
   PVR_ERROR GetChannelGroupsAmount(int& amount) override;
   PVR_ERROR GetChannelGroups(bool radio, kodi::addon::PVRChannelGroupsResultSet& results) override;
@@ -86,6 +87,8 @@ private:
   static const int PROCESS_LOOP_WAIT_SECS = 2;
   unsigned int iCurl_flags;
   int iConnect_timeout;
+  bool bDirect_timeshift;
+  bool bDirect_catchup;
 
   tvlink::data::Channel m_currentChannel;
   tvlink::Channels m_channels;

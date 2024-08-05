@@ -145,6 +145,22 @@ msgctxt "#30046"
 msgid "Enable stream buffering."
 msgstr "Включить буферизацию потоков."
 
+msgctxt "#30047"
+msgid "FFmpegDirect for Timeshift"
+msgstr "FFmpegDirect для Timeshift"
+
+msgctxt "#30048"
+msgid "Use addon imputstream.ffmpegdirect for Timeshift."
+msgstr "Использовать аддон imputstream.ffmpegdirect для функции Timeshift."
+
+msgctxt "#30049"
+msgid "FFmpegDirect for Catchup"
+msgstr "FFmpegDirect для Catchup"
+
+msgctxt "#30050"
+msgid "Use addon imputstream.ffmpegdirect for Catchup."
+msgstr "Использовать аддон imputstream.ffmpegdirect для функции Catchup."
+
 #. ############
 #. help info #
 #. ############

@@ -125,6 +125,16 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="directTimeshift" type="boolean" label="30047" help="30048">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="directCatchup" type="boolean" label="30049" help="30050">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
 

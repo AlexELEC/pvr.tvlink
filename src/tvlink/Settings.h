@@ -78,6 +78,8 @@ namespace tvlink
     int GetM3URefreshHour() const { return m_m3uRefreshHour; }
     int GetConnectTimeout() const { return m_connectTimeout; }
     bool GetCurlBuffering() const { return m_curlBuff; }
+    bool GetDirectTimeshift() const { return m_directTimeshift; }
+    bool GetDirectCatchup() const { return m_directCatchup; }
 
     const std::string& GetEpgLocation() const
     {
@@ -207,6 +209,8 @@ namespace tvlink
     int m_connectTimeout = 10;
     bool m_curlBuff = false;
     bool m_useFFmpeg = false;
+    bool m_directTimeshift = false;
+    bool m_directCatchup = false;
 
     // M3U
     PathType m_m3uPathType = PathType::REMOTE_PATH;

@@ -29,6 +29,8 @@ void Settings::ReadFromAddon(const std::string& userPath, const std::string& cli
   m_connectTimeout = kodi::addon::GetSettingInt("connectTimeout", 10);
   m_curlBuff = kodi::addon::GetSettingBoolean("curlBuff", false);
   m_useFFmpeg = kodi::addon::GetSettingBoolean("useFFmpeg", false);
+  m_directTimeshift = kodi::addon::GetSettingBoolean("directTimeshift", false);
+  m_directCatchup = kodi::addon::GetSettingBoolean("directCatchup", false);
 
   // M3U
   if (m_useFFmpeg)

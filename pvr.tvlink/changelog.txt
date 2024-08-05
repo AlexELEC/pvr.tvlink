@@ -1,3 +1,8 @@
+v2.4.1
+- Added: FFmpegDirect for Timeshift options
+- Added: FFmpegDirect for Catchup options
+- Fixed: Catchup without inputstream.ffmpegdirect
+
 v2.4.0
 - Fixed: Catchup for Kodi-21 (Omega)
 - Remove: inputstream.ffmpegdirect from depends

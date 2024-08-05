@@ -40,12 +40,12 @@ namespace tvlink
       static bool ChannelSpecifiesInputstream(const tvlink::data::Channel& channe);
       static std::string GetUrlEncodedProtocolOptions(const std::string& protocolOptions);
       static std::string GetEffectiveInputStreamName(const StreamType& streamType, const tvlink::data::Channel& channel);
+      static bool CheckInputstreamInstalledAndEnabled(const std::string& inputstreamName);
 
     private:
       static bool SupportsFFmpegReconnect(const StreamType& streamType, const tvlink::data::Channel& channel);
       static void InspectAndSetFFmpegDirectStreamProperties(std::vector<kodi::addon::PVRStreamProperty>& properties, const tvlink::data::Channel& channel, const std::string& streamUrl, bool isChannelURL);
       static void SetFFmpegDirectManifestTypeStreamProperty(std::vector<kodi::addon::PVRStreamProperty>& properties, const tvlink::data::Channel& channel, const std::string& streamURL, const StreamType& streamType);
-      static bool CheckInputstreamInstalledAndEnabled(const std::string& inputstreamName);
 
     };
   } // namespace utilities

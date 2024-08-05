@@ -126,14 +126,14 @@ bool StreamUtils::CheckInputstreamInstalledAndEnabled(const std::string& inputst
   {
     if (!enabled)
     {
-      std::string message = StringUtils::Format(kodi::addon::GetLocalizedString(30502).c_str(), inputstreamName.c_str());
-      kodi::QueueNotification(QueueMsg::QUEUE_ERROR, kodi::addon::GetLocalizedString(30500), message);
+      Logger::Log(LogLevel::LEVEL_INFO, "PVR TVLINK - addon %s: not enabled.", inputstreamName.c_str());
+      return false;
     }
   }
   else // Not installed
   {
-    std::string message = StringUtils::Format(kodi::addon::GetLocalizedString(30501).c_str(), inputstreamName.c_str());
-    kodi::QueueNotification(QueueMsg::QUEUE_ERROR, kodi::addon::GetLocalizedString(30500), message);
+      Logger::Log(LogLevel::LEVEL_INFO, "PVR TVLINK - addon %s: not installed.", inputstreamName.c_str());
+      return false;
   }
 
   return true;
