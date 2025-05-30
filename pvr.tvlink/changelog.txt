@@ -1,3 +1,6 @@
+v2.4.2
+- Fixed: Catchup mode
+
 v2.4.1
 - Added: FFmpegDirect for Timeshift options
 - Added: FFmpegDirect for Catchup options

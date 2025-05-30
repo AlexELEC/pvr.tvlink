@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.tvlink"
-  version="2.4.1"
+  version="2.4.2"
   name="PVR TVLINK Client"
   provider-name="Alex@ELEC">
   <requires>@ADDON_DEPENDS@
@@ -10,12 +10,12 @@
     point="kodi.pvrclient"
     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">PVR addon for TVLINK server.</summary>
-    <summary lang="ru_RU">PVR аддон для TVLINK сервера.  https://alexelec.tv/nastrojka-tvlink/</summary>
+    <summary lang="en_GB">PVR addon for TVLINK server. http://alexelec.github.io/</summary>
+    <summary lang="ru_RU">PVR аддон для TVLINK сервера.  http://alexelec.github.io/</summary>
     <description lang="en_GB">TVLINK PVR Client support streaming of Live TV, Timeshift, TV programs archives and EPG.</description>
     <description lang="ru_RU">Интерфейс для TVLINK сервера. Поддерживает просмотр потокового ТВ, архивов передач, Timeshift и работу с электронным телегидом.</description>
     <disclaimer lang="en_GB">The authors are in no way responsible for failed playings, incorrect EPG times, wasted hours, or any other undesirable effects.</disclaimer>
-    <disclaimer lang="ru_RU">Это нестабильная программа! Авторы не несут ответственности за неудачные воспроизведение, неверные время EPG, потраченное время и прочие нежелательные эффекты.</disclaimer>
+    <disclaimer lang="ru_RU">Авторы не несут ответственности за неудачные воспроизведение, неверные время EPG, потраченное время и прочие нежелательные эффекты.</disclaimer>
     <platform>@PLATFORM@</platform>
     <license>GPL-2.0-or-later</license>
     <forum>https://forum.alexelec.tv/index.php?board=10.0</forum>
@@ -23,6 +23,8 @@
       <icon>icon.png</icon>
     </assets>
     <news>
+v2.4.2
+- Fixed: Catchup mode
 v2.4.1
 - Added: FFmpegDirect for Timeshift options
 - Added: FFmpegDirect for Catchup options

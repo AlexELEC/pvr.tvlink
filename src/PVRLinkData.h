@@ -105,4 +105,5 @@ private:
   kodi::vfs::CFile m_streamHandle;
   std::string ch_url;
   std::string ch_name;
+  std::string ch_url_catchup;
 };
