@@ -52,7 +52,7 @@ namespace tvlink
     void ReloadPlayList();
 
   private:
-    static std::string ReadMarkerValue(const std::string& line, const std::string& markerName);
+    static std::string ReadMarkerValue(const std::string& line, const std::string& markerName, bool isCheckDelimiters = true);
     static void ParseSinglePropertyIntoChannel(const std::string& line, tvlink::data::Channel& channel, const std::string& markerName);
 
     std::string ParseIntoChannel(const std::string& line, tvlink::data::Channel& channel, std::vector<int>& groupIdList, int epgTimeShift, int catchupCorrectionSecs);
