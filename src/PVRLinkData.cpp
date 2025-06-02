@@ -363,6 +363,17 @@ PVR_ERROR PVRLinkData::GetSignalStatus(int channelUid, kodi::addon::PVRSignalSta
   return PVR_ERROR_NO_ERROR;
 }
 
+/***************************************************************************
+ * Stream State
+ **************************************************************************/
+
+PVR_ERROR IptvSimple::StreamClosed()
+{
+  Logger::Log(LEVEL_INFO, "%s - Stream Closed", __FUNCTION__);
+
+  return PVR_ERROR_NO_ERROR;
+}
+
 ADDON_STATUS PVRLinkData::SetSetting(const std::string& settingName, const kodi::addon::CSettingValue& settingValue)
 {
   std::lock_guard<std::mutex> lock(m_mutex);
