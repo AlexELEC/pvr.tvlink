@@ -40,5 +40,6 @@ namespace tvlink
     std::vector<tvlink::data::ChannelGroup> m_channelGroups;
 
     bool m_channelGroupsLoadFailed = false;
+	int m_groupBackendOrderPosition;
   };
 } //namespace tvlink

@@ -14,6 +14,6 @@ using namespace tvlink::data;
 void ChannelGroup::UpdateTo(kodi::addon::PVRChannelGroup& left) const
 {
   left.SetIsRadio(m_radio);
-  left.SetPosition(0); // groups default order, unused
+  left.SetPosition(m_position);
   left.SetGroupName(m_groupName);
 }
