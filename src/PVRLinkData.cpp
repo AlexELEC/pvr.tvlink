@@ -204,7 +204,7 @@ PVR_ERROR PVRLinkData::GetChannels(bool radio, kodi::addon::PVRChannelsResultSet
   return m_channels.GetChannels(results, radio);
 }
 
-PVR_ERROR PVRLinkData::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel, std::vector<kodi::addon::PVRStreamProperty>& properties)
+PVR_ERROR IptvSimple::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel, PVR_SOURCE source, std::vector<kodi::addon::PVRStreamProperty>& properties)
 {
   if (GetChannel(channel, m_currentChannel))
   {
