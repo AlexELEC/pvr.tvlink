@@ -83,7 +83,6 @@ ADDON_STATUS PVRLinkData::Create()
   iConnect_timeout = Settings::GetInstance().GetConnectTimeout(); // CURL connection timeout
 
   // ADDON_READ_TRUNCATED     - function returns before entire buffer has been filled
-  // ADDON_READ_CHUNKED       - read in the minimum defined chunk size, this disables internal cache then
   // ADDON_READ_NO_CACHE      - open without caching
   // ADDON_READ_MULTI_STREAM  - will seek between multiple streams in the file frequently
   // ADDON_READ_AUDIO_VIDEO   - file is audio and/or video (and e.g. may grow)
@@ -97,7 +96,7 @@ ADDON_STATUS PVRLinkData::Create()
   else
   {
     strCurl_buff = "no buffering";
-    iCurl_flags = ADDON_READ_TRUNCATED | ADDON_READ_CHUNKED | ADDON_READ_NO_CACHE | ADDON_READ_AUDIO_VIDEO;
+    iCurl_flags = ADDON_READ_TRUNCATED | ADDON_READ_NO_CACHE | ADDON_READ_AUDIO_VIDEO;
   }
 
   bDirect_timeshift = Settings::GetInstance().GetDirectTimeshift();
@@ -215,13 +214,26 @@ PVR_ERROR PVRLinkData::GetChannelStreamProperties(const kodi::addon::PVRChannel&
       std::map<std::string, std::string> catchupProperties;
       m_catchupController.ProcessChannelForPlayback(m_currentChannel, catchupProperties);
 
+      properties.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, streamURL);
       properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, INPUTSTREAM_FFMPEGDIRECT);
-      properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM_PLAYER, "videodefaultplayer");
       properties.emplace_back(PVR_STREAM_PROPERTY_MIMETYPE, "video/mp2t");
+      properties.emplace_back("inputstream-player", "videodefaultplayer");
       properties.emplace_back("inputstream.ffmpegdirect.stream_mode", "timeshift");
       properties.emplace_back("inputstream.ffmpegdirect.is_realtime_stream", "true");
-      properties.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, streamURL);
+      properties.emplace_back("inputstream.ffmpegdirect.open_mode", "curl");
       Logger::Log(LEVEL_INFO, "GetChannelStreamProperties() - Live Stream URL: %s",WebUtils::RedactUrl(streamURL).c_str());
+
+      if (!m_currentChannel.GetProperties().empty())
+      {
+          for (auto& prop : m_currentChannel.GetProperties())
+          properties.emplace_back(prop.first, prop.second);
+      }
+
+      if (!catchupProperties.empty())
+      {
+          for (auto& prop : catchupProperties)
+          properties.emplace_back(prop.first, prop.second);
+      }
     }
 
     return PVR_ERROR_NO_ERROR;
@@ -278,30 +290,38 @@ PVR_ERROR PVRLinkData::GetEPGTagStreamProperties(const kodi::addon::PVREPGTag& t
 
   if (GetChannel(static_cast<int>(tag.GetUniqueChannelId()), m_currentChannel))
   {
-    Logger::Log(LEVEL_DEBUG, "%s - GetPlayEpgAsLive is %s", __FUNCTION__, Settings::GetInstance().CatchupPlayEpgAsLive() ? "enabled" : "disabled");
-
     std::map<std::string, std::string> catchupProperties;
     m_catchupController.ProcessEPGTagForTimeshiftedPlayback(tag, m_currentChannel, catchupProperties);
-    std::string orgUrl = m_currentChannel.GetStreamURL();
 
-    // shift catchup url
-    m_currentChannel.GenerateShiftCatchupSource(orgUrl);
-    const std::string catchupShiftUrl = m_catchupController.GetCatchupUrl(m_currentChannel);
+    // catchup url: shift
+    m_currentChannel.GenerateShiftCatchupSource(m_currentChannel.GetStreamURL());
+    const std::string catchupUrl = m_catchupController.GetCatchupUrl(m_currentChannel);
 
     if (bDirect_catchup && StreamUtils::CheckInputstreamInstalledAndEnabled(INPUTSTREAM_FFMPEGDIRECT))
     {
+      properties.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, catchupUrl);
       properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, INPUTSTREAM_FFMPEGDIRECT);
-      properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM_PLAYER, "videodefaultplayer");
       properties.emplace_back(PVR_STREAM_PROPERTY_MIMETYPE, "video/mp2t");
-      properties.emplace_back("inputstream.ffmpegdirect.stream_mode", "catchup");
-      properties.emplace_back("inputstream.ffmpegdirect.is_realtime_stream", "true");
-      properties.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, catchupShiftUrl);
-      Logger::Log(LEVEL_INFO, "GetEPGTagStreamProperties() - Catchup URL: %s", WebUtils::RedactUrl(catchupShiftUrl).c_str());
+      properties.emplace_back("inputstream-player", "videodefaultplayer");
+      properties.emplace_back("inputstream.ffmpegdirect.open_mode", "curl");
+      Logger::Log(LEVEL_INFO, "GetEPGTagStreamProperties() - Catchup URL: %s", WebUtils::RedactUrl(catchupUrl).c_str());
+
+      if (!m_currentChannel.GetProperties().empty())
+      {
+          for (auto& prop : m_currentChannel.GetProperties())
+          properties.emplace_back(prop.first, prop.second);
+      }
+
+      if (!catchupProperties.empty())
+      {
+          for (auto& prop : catchupProperties)
+          properties.emplace_back(prop.first, prop.second);
+      }
     }
     else
     {
       properties.emplace_back(PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE, "true");
-      ch_url_catchup = catchupShiftUrl.c_str();
+      ch_url_catchup = catchupUrl.c_str();
     }
 
     return PVR_ERROR_NO_ERROR;

@@ -201,8 +201,6 @@ void CatchupController::ResetCatchupState()
 
 void CatchupController::SetCatchupInputStreamProperties(bool playbackAsLive, const Channel& channel, std::map<std::string, std::string>& catchupProperties, const StreamType& streamType)
 {
-  catchupProperties.insert({PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE, playbackAsLive ? "true" : "false"});
-
   catchupProperties.insert({"inputstream.ffmpegdirect.is_realtime_stream",
   	StringUtils::EqualsNoCase(channel.GetProperty(PVR_STREAM_PROPERTY_ISREALTIMESTREAM), "true") ? "true" : "false"});
   catchupProperties.insert({"inputstream.ffmpegdirect.stream_mode", "catchup"});
