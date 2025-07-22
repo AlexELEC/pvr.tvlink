@@ -1,3 +1,6 @@
+v22.0.2
+- Add: always play EPG Tags as live-stream
+
 v22.0.1
 - Fix: Timeshift/Catchup
 
