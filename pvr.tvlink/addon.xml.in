@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.tvlink"
-  version="22.0.2"
+  version="22.0.3"
   name="PVR TVLINK Client"
   provider-name="Alex@ELEC">
   <requires>@ADDON_DEPENDS@
@@ -21,6 +21,8 @@
       <icon>icon.png</icon>
     </assets>
     <news>
+v22.0.3
+- Set: one option Use Inputstream FFmpeg Direct
 v22.0.2
 - Add: always play EPG Tags as live-stream
 v22.0.1
