@@ -88,7 +88,6 @@ private:
   static const int PROCESS_LOOP_WAIT_SECS = 2;
   unsigned int iCurl_flags;
   int iConnect_timeout;
-  bool bDirect_timeshift;
   bool bDirect_catchup;
 
   tvlink::data::Channel m_currentChannel;

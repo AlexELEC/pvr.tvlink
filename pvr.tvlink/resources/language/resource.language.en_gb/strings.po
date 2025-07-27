@@ -145,20 +145,12 @@ msgctxt "#30046"
 msgid "Enable stream buffering."
 msgstr ""
 
-msgctxt "#30047"
-msgid "FFmpegDirect for Timeshift"
-msgstr ""
-
-msgctxt "#30048"
-msgid "Use addon imputstream.ffmpegdirect for Timeshift."
-msgstr ""
-
 msgctxt "#30049"
-msgid "FFmpegDirect for Catchup"
+msgid "Use Inputstream FFmpeg Direct"
 msgstr ""
 
 msgctxt "#30050"
-msgid "Use addon imputstream.ffmpegdirect for Catchup."
+msgid "Use the Inputstream FFmpeg Direct addon to play streams."
 msgstr ""
 
 #. ############

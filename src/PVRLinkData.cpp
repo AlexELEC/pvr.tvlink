@@ -99,7 +99,6 @@ ADDON_STATUS PVRLinkData::Create()
     iCurl_flags = ADDON_READ_TRUNCATED | ADDON_READ_NO_CACHE | ADDON_READ_AUDIO_VIDEO;
   }
 
-  bDirect_timeshift = Settings::GetInstance().GetDirectTimeshift();
   bDirect_catchup = Settings::GetInstance().GetDirectCatchup();
   ch_url_catchup = "";
 
@@ -208,7 +207,7 @@ PVR_ERROR PVRLinkData::GetChannelStreamProperties(const kodi::addon::PVRChannel&
 {
   if (GetChannel(channel, m_currentChannel))
   {
-    if (bDirect_timeshift && StreamUtils::CheckInputstreamInstalledAndEnabled(INPUTSTREAM_FFMPEGDIRECT))
+    if (bDirect_catchup && StreamUtils::CheckInputstreamInstalledAndEnabled(INPUTSTREAM_FFMPEGDIRECT))
     {
       std::string streamURL;
       if (!ch_url_catchup.empty())
