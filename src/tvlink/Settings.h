@@ -204,10 +204,8 @@ namespace tvlink
     std::string m_tvlinkPort;
     std::string m_tvlinkUser;
     std::string m_tvlinkToken;
-    std::string m_tvlinkList;
     int m_connectTimeout = 10;
     bool m_curlBuff = false;
-    bool m_useFFmpeg = false;
     bool m_directCatchup = false;
 
     // M3U

@@ -37,11 +37,6 @@
           </constraints>
           <control type="edit" format="string" />
         </setting>
-        <setting id="useFFmpeg" type="boolean" label="30716" help="30717">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="m3uCache" type="boolean" label="30025" help="30604">
           <level>0</level>
           <default>false</default>

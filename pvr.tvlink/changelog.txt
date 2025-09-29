@@ -1,3 +1,6 @@
+v22.0.4
+- Del: option Use FFmpeg playlist
+
 v22.0.3
 - Set: one option Use Inputstream FFmpeg Direct
 

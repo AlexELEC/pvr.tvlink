@@ -28,28 +28,21 @@ void Settings::ReadFromAddon(const std::string& userPath, const std::string& cli
   m_tvlinkToken = kodi::addon::GetSettingString("tvlinkToken");
   m_connectTimeout = kodi::addon::GetSettingInt("connectTimeout", 10);
   m_curlBuff = kodi::addon::GetSettingBoolean("curlBuff", false);
-  m_useFFmpeg = kodi::addon::GetSettingBoolean("useFFmpeg", false);
   m_directCatchup = kodi::addon::GetSettingBoolean("directCatchup", false);
-
-  // M3U
-  if (m_useFFmpeg)
-    m_tvlinkList = "/ffmpeglist";
-  else
-    m_tvlinkList = "/playlist";
 
   if (!m_tvlinkToken.empty())
   {
     if (!m_tvlinkUser.empty())
-      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + "/" + m_tvlinkToken + m_tvlinkList + "/" + m_tvlinkUser;
+      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + "/" + m_tvlinkToken + "/playlist/" + m_tvlinkUser;
     else
-      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + "/" + m_tvlinkToken + m_tvlinkList;
+      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + "/" + m_tvlinkToken + "/playlist";
   }
   else
   {
     if (!m_tvlinkUser.empty())
-      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + m_tvlinkList + "/" + m_tvlinkUser;
+      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + "/playlist/" + m_tvlinkUser;
     else
-      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + m_tvlinkList;
+      m_m3uUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + "/playlist";
   }
 
   m_cacheM3U = kodi::addon::GetSettingBoolean("m3uCache", false);
