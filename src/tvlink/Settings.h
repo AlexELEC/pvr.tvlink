@@ -88,7 +88,6 @@ namespace tvlink
     const PathType& GetEpgPathType() const { return m_epgPathType; }
     const std::string& GetEpgPath() const { return m_epgPath; }
     const std::string& GetEpgUrl() const { return m_epgUrl; }
-    bool UseEPGCache() const { return m_epgPathType == PathType::REMOTE_PATH ? m_cacheEPG : false; }
     float GetEpgTimeshiftHours() const { return m_epgTimeShiftHours; }
     int GetEpgTimeshiftSecs() const { return static_cast<int>(m_epgTimeShiftHours * 60 * 60); }
     bool GetTsOverride() const { return m_tsOverride; }
@@ -223,7 +222,6 @@ namespace tvlink
     PathType m_epgPathType = PathType::REMOTE_PATH;
     std::string m_epgPath;
     std::string m_epgUrl;
-    bool m_cacheEPG = true;
     float m_epgTimeShiftHours = 0;
     bool m_tsOverride = false;
 

@@ -54,7 +54,6 @@ void Settings::ReadFromAddon(const std::string& userPath, const std::string& cli
 
   // EPG
   m_epgUrl = "http://" + m_tvlinkIP + ":" + m_tvlinkPort + "/xmltv";
-  m_cacheEPG = kodi::addon::GetSettingBoolean("epgCache", true);
   m_epgTimeShiftHours = kodi::addon::GetSettingFloat("epgTimeShift", 0.0f);
   m_tsOverride = kodi::addon::GetSettingBoolean("epgTSOverride", false);
 }
@@ -96,8 +95,6 @@ ADDON_STATUS Settings::SetValue(const std::string& settingName, const kodi::addo
   else if (settingName == "m3uRefreshHour")
     return SetSetting<int, ADDON_STATUS>(settingName, settingValue, m_m3uRefreshHour, ADDON_STATUS_OK, ADDON_STATUS_OK);
   // EPG
-  else if (settingName == "epgCache")
-    return SetSetting<bool, ADDON_STATUS>(settingName, settingValue, m_cacheEPG, ADDON_STATUS_OK, ADDON_STATUS_OK);
   else if (settingName == "epgTimeShift")
     return SetSetting<float, ADDON_STATUS>(settingName, settingValue, m_epgTimeShiftHours, ADDON_STATUS_OK, ADDON_STATUS_OK);
   else if (settingName == "epgTSOverride")
