@@ -1,3 +1,6 @@
+v22.0.5
+- Epg: optimize download xmltv-file based on TVLINK xmltv.status
+
 v22.0.4
 - Del: option Use FFmpeg playlist
 
