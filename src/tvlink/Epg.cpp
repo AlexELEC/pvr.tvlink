@@ -46,7 +46,14 @@ bool Epg::Init(int epgMaxPastDays, int epgMaxFutureDays)
     // data on each startup so we need to make sure it's loaded whether or not
     // kodi considers it necessary.
     time_t now = std::time(nullptr);
-    LoadEPG(now - m_epgMaxPastDaysSeconds, now + m_epgMaxFutureDaysSeconds);
+    time_t start = now - m_epgMaxPastDaysSeconds;
+    time_t end   = now + m_epgMaxFutureDaysSeconds;
+
+    LoadEPG(start, end);
+
+    // Prevent duplicate EPG loading on first GetEPGForChannel()
+    m_lastStart = start;
+    m_lastEnd   = end;
   }
 
   return true;
@@ -145,29 +152,73 @@ bool Epg::LoadEPG(time_t start, time_t end)
 bool Epg::GetXMLTVFileWithRetries(std::string& data)
 {
   int bytesRead = 0;
-  int count = 0;
+  bool forceCacheOnly = false;
+  bool statusAvailable = false;
 
-  // Cache is only allowed if refresh mode is disabled
-  bool useEPGCache = Settings::GetInstance().GetM3URefreshMode() != RefreshMode::DISABLED ? false : Settings::GetInstance().UseEPGCache();
+  // --- 1. Check xmltv.status ---
+  std::string statusUrl = m_xmltvLocation + ".status";
+  std::string flag;
 
-  while (count < 3) // max 3 tries
+  if (FileUtils::GetFileContents(statusUrl, flag))
   {
-    if ((bytesRead = FileUtils::GetCachedFileContents(XMLTV_CACHE_FILENAME, m_xmltvLocation, data, useEPGCache)) != 0)
-      break;
+    statusAvailable = true;
+    StringUtils::Trim(flag);
 
-    Logger::Log(LEVEL_ERROR, "%s - Unable to load EPG file '%s':  file is missing or empty. :%dth try.", __FUNCTION__, m_xmltvLocation.c_str(), ++count);
-
-    if (count < 3)
-      std::this_thread::sleep_for(std::chrono::microseconds(2 * 1000 * 1000)); // sleep 2 sec before next try.
+    if (flag == "Updated")
+    {
+      Logger::Log(LEVEL_INFO, "LoadChannelEpgs - XMLTV status: No need to update");
+      forceCacheOnly = true;
+    }
+    else
+    {
+      Logger::Log(LEVEL_INFO, "LoadChannelEpgs - XMLTV status: Needs to be updated");
+    }
+  }
+  else
+  {
+    Logger::Log(LEVEL_INFO, "LoadChannelEpgs - XMLTV status not available");
   }
 
-  if (bytesRead == 0)
+  const std::string cachedPath = FileUtils::GetUserDataAddonFilePath(XMLTV_CACHE_FILENAME);
+
+  // --- 2. If updating is prohibited → read ONLY the cache ---
+  if (forceCacheOnly)
   {
-    Logger::Log(LEVEL_ERROR, "%s - Unable to load EPG file '%s':  file is missing or empty. After %d tries.", __FUNCTION__, m_xmltvLocation.c_str(), count);
-    return false;
+    Logger::Log(LEVEL_INFO, "LoadChannelEpgs - Loading EPG from cache only");
+
+    bytesRead = FileUtils::GetFileContents(cachedPath, data);
+    if (bytesRead > 0)
+      return true;
+
+    Logger::Log(LEVEL_WARNING, "LoadChannelEpgs - Cache missing or invalid, forcing download despite status=Updated");
   }
 
-  return true;
+  // --- 3. If status is NOT available → try cache as fallback ---
+  if (!statusAvailable)
+  {
+    Logger::Log(LEVEL_INFO, "LoadChannelEpgs - Status unknown, trying cache");
+
+    bytesRead = FileUtils::GetFileContents(cachedPath, data);
+    if (bytesRead > 0)
+      return true;
+  }
+
+  // --- 4. Download XMLTV (single HTTP request) ---
+  bytesRead = FileUtils::GetFileContents(m_xmltvLocation, data);
+  if (bytesRead > 0)
+  {
+    Logger::Log(LEVEL_INFO, "LoadChannelEpgs - EPG downloaded");
+
+    // save to cache
+    kodi::vfs::CFile file;
+    if (file.OpenFileForWrite(cachedPath, true))
+      file.Write(data.c_str(), data.size());
+
+    return true;
+  }
+
+  Logger::Log(LEVEL_ERROR, "LoadChannelEpgs - Unable to load EPG file '%s': file is missing or empty.", m_xmltvLocation.c_str());
+  return false;
 }
 
 char* Epg::FillBufferFromXMLTVData(std::string& data, std::string& decompressedData)
