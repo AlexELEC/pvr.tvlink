@@ -1,3 +1,6 @@
+v22.0.6
+- Epg: add parsed EPG-cache binary file
+
 v22.0.5
 - Epg: optimize download xmltv-file based on TVLINK xmltv.status
 
